@@ -16,10 +16,11 @@ public class Map {
         this.placeDisc(2,4-1,convertChar('E'));
         this.placeDisc(2,5-1,convertChar('D'));
         //x-1 is the position of first dimension of array
-        this.prepareSpace(1,4-1,convertChar('D'));
-        this.prepareSpace(1,5-1,convertChar('E'));
-        this.prepareSpace(2,4-1,convertChar('E'));
-        this.prepareSpace(2,5-1,convertChar('D'));
+        this.flipDiscs(1,4-1,convertChar('D'));
+        this.flipDiscs(1,5-1,convertChar('E'));
+        this.flipDiscs(2,4-1,convertChar('E'));
+        this.flipDiscs(2,5-1,convertChar('D'));
+
     }
     public void placeDisc(Player player){
         //takes mokhtasat -> checks it can be placed -> new a disc and adds to players disc
@@ -37,6 +38,84 @@ public class Map {
                 System.out.println("You can not place disc at this place");
             }
         }
+    }
+    private boolean checkPlace(int player,int x,int y){
+        int opPlayer=player==1?2:1;
+        if (map[x][y].getPlayer()!=0) return false;
+        //horizontal line
+        int counter=0;
+        for(int i=y;i<8;i++){
+            if(i!=y && map[x][i].getPlayer()==0) return false;
+            if(map[x][i].getPlayer()==opPlayer) counter++;
+            if(i!=y && map[x][i].getPlayer()==player && counter!=0)return true;
+        }
+        counter=0;
+        for(int i=y;i>=0;i--){
+            if(i!=y && map[x][i].getPlayer()==0) return false;
+            if(map[x][i].getPlayer()==opPlayer) counter++;
+            if(i!=y && map[x][i].getPlayer()==player && counter!=0)return true;
+        }
+        //vertical line
+        counter=0;
+        for(int j=x;j>=0;j--){
+            if(j!=x &&map[j][y].getPlayer()==0)return false;
+            if(map[j][y].getPlayer()==opPlayer)counter++;
+            if(j!=x && map[j][y].getPlayer()==player && counter!=0)return true;
+        }
+        counter=0;
+        for(int j=x;j<8;j++){
+            if(j!=x &&map[j][y].getPlayer()==0)return false;
+            if(map[j][y].getPlayer()==opPlayer)counter++;
+            if(j!=x && map[j][y].getPlayer()==player && counter!=0)return true;
+        }
+        //"\" like path
+        counter=0;
+        int j=x;
+        for(int i=y;i>=0;i--){
+            if(j!=x && i!=y &&map[j][i].getPlayer()==0)return false;
+            if(map[j][i].getPlayer()==opPlayer)counter++;
+            if(j!=x && i!=y &&map[j][i].getPlayer()==player &&counter!=0)return true;
+            if(j-1>=0)
+                j--;
+            else
+                break;
+        }
+        counter=0;
+        j=x;
+        for(int i=y;i<8;i++){
+            if(j!=x && i!=y &&map[j][i].getPlayer()==0)return false;
+            if(map[j][i].getPlayer()==opPlayer)counter++;
+            if(j!=x && i!=y &&map[j][i].getPlayer()==player &&counter!=0)return true;
+            if(j+1<8)
+                j++;
+            else
+                break;
+        }
+        // the '/' paths
+        j=x;
+        counter=0;
+        for(int i=y;i>=0;i--){
+            if(j!=x && i!=y &&map[j][i].getPlayer()==0)return false;
+            if(map[j][i].getPlayer()==opPlayer)counter++;
+            if(j!=x && i!=y &&map[j][i].getPlayer()==player &&counter!=0)return true;
+            if(j+1<8)
+                j++;
+            else
+                break;
+        }
+        counter=0;
+        j=x;
+        for(int i=y;i<8;i++){
+            if(j!=x && i!=y &&map[j][i].getPlayer()==0)return false;
+            if(map[j][i].getPlayer()==opPlayer)counter++;
+            if(j!=x && i!=y &&map[j][i].getPlayer()==player &&counter!=0)return true;
+            if(j-1>=0)
+                j--;
+            else
+                break;
+        }
+        System.out.println("what?");
+        return false;
     }
     private void placeDisc(int playerId,int x,int y){
            map[x][y].setPlayer(playerId);
@@ -61,7 +140,7 @@ public class Map {
                 if(map[x][i].getPlayer()==player){
                     while(counter>0){
                         map[x][y+counter].setPlayer(player);
-                        //this.prepareSpace(player,x,y+counter);
+                        this.prepareSpace(player,x,y+counter);
                         counter--;
                     }
                     if(i!=y)
@@ -78,7 +157,7 @@ public class Map {
                 if(map[x][i].getPlayer()==player){
                     while(counter>0){
                         map[x][y-counter].setPlayer(player);
-                        //this.prepareSpace(player,x,y-counter);
+                        this.prepareSpace(player,x,y-counter);
                         counter--;
                     }
                     if(i!=y)
@@ -97,7 +176,7 @@ public class Map {
                 if(map[j][y].getPlayer()==player){
                     while(counter>0){
                         map[x-counter][y].setPlayer(player);
-                        //this.prepareSpace(player,x-counter,y);
+                        this.prepareSpace(player,x-counter,y);
                         counter--;
                     }
                     if(j!=x)
@@ -114,13 +193,13 @@ public class Map {
                 if(map[j][y].getPlayer()==player){
                     while(counter>0){
                         map[x+counter][y].setPlayer(player);
-                        //this.prepareSpace(player,x+counter,y);
+                        this.prepareSpace(player,x+counter,y);
                         counter--;
                     }
                     if(j!=x)
                         break;
                 }else
-                    break;
+                     break;
             }
         }
         counter=0;
@@ -134,13 +213,13 @@ public class Map {
                 if(map[j][i].getPlayer()==player){
                     while(counter>0){
                         map[x-counter][y-counter].setPlayer(player);
-                        //this.prepareSpace(player,x-counter,y-counter);
+                        this.prepareSpace(player,x-counter,y-counter);
                         counter--;
                     }
                     if(i!=y && j!=x)
                         break;
                 }else
-                    break;
+                 break;
             }
             if(j-1>=0)
                 j--;
@@ -159,14 +238,13 @@ public class Map {
                     while(counter>0){
                         map[x+counter][y+counter].setPlayer(player);
 
-                        //this.prepareSpace(player,x+counter,y+counter);
+                        this.prepareSpace(player,x+counter,y+counter);
                         counter--;
                     }
                     if(i!=y && j!=x)
                         break;
                 }else
-                    //this part has passed same color disc or it didn't find any
-                    break;
+                  break;
             }
             if(j+1<8)
                 j++;
@@ -184,13 +262,14 @@ public class Map {
                 if(map[j][i].getPlayer()==player){
                     while(counter>0){
                         map[x+counter][y-counter].setPlayer(player);
-                        //this.prepareSpace(player,x+counter,y-counter);
+                        this.prepareSpace(player,x+counter,y-counter);
                         counter--;
                     }
                     if(i!=y && j!=x)
                         break;
                 }else
                     break;
+
             }
             if(j+1<8)
                 j++;
@@ -206,14 +285,13 @@ public class Map {
                 if (map[j][i].getPlayer() == player) {
                     while (counter > 0) {
                         map[x - counter][y + counter].setPlayer(player);
-                        //this.prepareSpace(player,x-counter,y+counter);
+                        this.prepareSpace(player,x-counter,y+counter);
                         counter--;
                     }
                     if (i != y && j != x)
                         break;
-                } else{
-                   // if(counter!=0 && )
-                }
+                    } else
+                        break;
 
             }
             if(j-1>=0)
@@ -262,6 +340,8 @@ public class Map {
                     System.out.printf("%c  ",'3');
                 }else if(disc.getPlayer()==-2){
                     System.out.printf("%c  ",'4');
+                }else if(disc.getPlayer()==-3){
+                    System.out.printf("%c  ",'5');
                 }
                 else {
                     System.out.printf("0  ");
