@@ -3,6 +3,13 @@ public class Player {
     //the list is used to determine the number of discs each player has
     protected int playerId;
     protected Map map;
+
+    /**
+     *
+     * @param playerId the player id of the player
+     * @param map the map which player is playing based on it
+     *            constructor also place starting discs
+     */
     public Player(int playerId,Map map){
         this.map=map;
         this.playerId=playerId;
@@ -14,16 +21,28 @@ public class Player {
             map.placeDisc(2,5-1,convertChar('D'));
         }
     }
+
+    /**
+     *
+     * @return returns playerID
+     */
     public int getPlayerId() {
         return playerId;
     }
+
+    /**
+     * this method takes coordinates from user and if its possible place discs in map
+     */
     public void placeDisc(){
         Scanner input=new Scanner(System.in);
+        //it checks if is there any spot for discs to be placed
         if(map.placesToChoice(playerId)!=0){
+            //continue taking inputs until user enters correct input
            while(true){
                try{
                    int x=Integer.parseInt(input.next());
                    char yChar=input.next().charAt(0);
+                   //checks if this place in map is available or not
                    if(map.checkPlace(playerId,x-1,convertChar(yChar))){
                        map.placeDisc(playerId,x-1,convertChar(yChar));
                        break;
@@ -36,10 +55,10 @@ public class Player {
            }
         }
         else
+            //of there be no place to choose player pass the turn
             System.out.println("Pass");
     }
     /**
-     *
      * @param mapSide the character of map position
      * @return returns the equal in Map second dimension
      */
